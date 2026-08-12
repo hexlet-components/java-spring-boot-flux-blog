@@ -9,9 +9,12 @@ spring:
   # Конфигурируем работу с базой данной при помощи r2dbc
   r2dbc:
     # Указываем драйвер базы данных и путь к файлу БД
-    url: r2dbc:h2:file:///./hexlet
+    url: r2dbc:h2:file:///./hexlet?options=CASE_INSENSITIVE_IDENTIFIERS=TRUE
     username: sa
     password:
+  # CASE_INSENSITIVE_IDENTIFIERS нужен из-за Spring Data R2DBC 4.x: он цитирует
+  # идентификаторы, то есть ищет "users" в нижнем регистре, а H2 создаёт таблицу
+  # без кавычек как USERS. С этим флагом обе формы совпадают.
   # liquibase подключается к базе через jdbc
   # Для него подключение к БД конфигурируем отдельно
   # Указываем путь до того же самого файла с базой данных ./hexlet
@@ -20,5 +23,5 @@ spring:
   liquibase:
     user: sa
     password:
-    url: jdbc:h2:file:./hexlet
+    url: jdbc:h2:file:./hexlet;CASE_INSENSITIVE_IDENTIFIERS=TRUE
     change-log: classpath:db/changelog/db.changelog-master.yaml

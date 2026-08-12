@@ -1,13 +1,12 @@
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.api.tasks.testing.logging.TestLogEvent
-
 plugins {
   jacoco
-  checkstyle
-  id("org.springframework.boot") version "3.4.5"
-  id("io.spring.dependency-management") version "1.1.7"
-  id ("com.adarshr.test-logger") version "4.0.0"
-  id("io.freefair.lombok") version "8.14"
+  alias(libs.plugins.spotless)
+  alias(libs.plugins.versions)
+  alias(libs.plugins.version.catalog.update)
+  alias(libs.plugins.spring.boot)
+  alias(libs.plugins.spring.dependency.management)
+  alias(libs.plugins.test.logger)
+  alias(libs.plugins.lombok)
   id("java")
   id("application")
 }
@@ -16,24 +15,31 @@ repositories {
   mavenCentral()
 }
 
-tasks.compileJava {
-  options.release.set(24)
+java {
+  toolchain { languageVersion = JavaLanguageVersion.of(25) }
 }
 
 dependencies {
   // Подключаем модуль Spring WebFlux
-  implementation("org.springframework.boot:spring-boot-starter-webflux")
-  testImplementation("org.springframework.boot:spring-boot-starter-test")
+  implementation(libs.springBootStarterWebflux)
+  testImplementation(libs.springBootStarterTest)
+  testImplementation(libs.springBootStarterWebfluxTest)
   // Для асинхронного неблокирующего доступа к базе даных будем использовать стандарт r2dbc
-  implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
+  implementation(libs.springBootStarterDataR2dbc)
   // Но и jdbc все нужен для работы liquibase
-  implementation("org.springframework.boot:spring-boot-starter-jdbc")
+  implementation(libs.springBootStarterJdbc)
   // Устанавливаем реактивный драйвер базы данных H2
-  implementation("io.r2dbc:r2dbc-h2")
-  runtimeOnly("com.h2database:h2:2.1.214")
-  implementation("org.liquibase:liquibase-core")
+  implementation(libs.r2dbcH2)
+  runtimeOnly(libs.h2)
+  implementation(libs.springBootStarterLiquibase)
   // Зависимость для тестирования реактивных приложений
-  testImplementation("io.projectreactor:reactor-test")
+  testImplementation(libs.reactorTest)
+}
+
+// Раньше JUnit Platform подставлял плагин Spring Boot, в 4.x этого не происходит,
+// и тесты просто не обнаруживаются: «Executed 0 tests».
+tasks.test {
+  useJUnitPlatform()
 }
 
 tasks.jacocoTestReport { reports { xml.required.set(true) } }
@@ -44,4 +50,22 @@ application {
 
 testlogger {
   showStandardStreams = true
+}
+
+spotless {
+  java {
+    importOrder()
+    removeUnusedImports()
+    googleJavaFormat().aosp()
+    formatAnnotations()
+    leadingTabsToSpaces(4)
+    endWithNewline()
+  }
+}
+
+// versionCatalogUpdate пишет свежие версии прямо в gradle/libs.versions.toml,
+// поэтому руками их сверять не нужно. Ключи не сортируются: порядок в каталоге
+// смысловой, по группам зависимостей.
+versionCatalogUpdate {
+  sortByKey = false
 }

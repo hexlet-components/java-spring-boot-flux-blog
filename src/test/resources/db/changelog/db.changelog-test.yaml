@@ -1,0 +1,17 @@
+# Тестовый changelog: схема из основного плюс фикстура.
+#
+# Фикстуру исполняет liquibase, а не инициализатор скриптов из spring.sql.init.
+# Причина в порядке: инициализатор ходит в базу через r2dbc, liquibase через
+# jdbc, общего бина у них нет, и гарантии «сначала схема, потом данные» тоже.
+# В Spring Boot 3 порядок складывался сам, в 4 сложился обратный, и data.sql
+# падал с «Table USERS not found».
+databaseChangeLog:
+  - include:
+      file: db/changelog/db.changelog-master.yaml
+  - changeSet:
+      id: test-data
+      author: hexlet
+      changes:
+        - sqlFile:
+            path: data.sql
+            relativeToChangelogFile: false

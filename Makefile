@@ -22,7 +22,10 @@ report:
 	./gradlew jacocoTestReport
 
 lint:
-	./gradlew checkstyleMain
+	./gradlew spotlessCheck
+
+lint-fix:
+	./gradlew spotlessApply
 
 update-deps:
 	./gradlew refreshVersions

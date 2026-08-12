@@ -8,7 +8,3 @@
 
 rootProject.name = "java-spring-boot-flux-blog"
 
-plugins {
-    // See https://jmfayard.github.io/refreshVersions
-    id("de.fayard.refreshVersions") version "0.60.5"
-}
