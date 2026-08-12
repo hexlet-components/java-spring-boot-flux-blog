@@ -11,8 +11,7 @@ import org.springframework.data.relational.core.mapping.Table;
 public class User {
 
     // Идентификатор будет генерироваться автоматически
-    @Id
-    private long id;
+    @Id private long id;
 
     private String firstName;
 

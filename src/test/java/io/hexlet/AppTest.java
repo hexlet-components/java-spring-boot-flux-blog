@@ -1,39 +1,42 @@
 package io.hexlet;
 
-import io.hexlet.model.User;
-
-import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import io.hexlet.model.User;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureWebTestClient
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class AppTest {
 
-    @Autowired
-    private WebTestClient webTestClient;
+    @Autowired private WebTestClient webTestClient;
 
     @Test
     @Order(1)
     public void testGetUsers() {
         webTestClient
-            // Указываем метод запроса (GET) и адрес (*/users*)
-            .get().uri("/users")
-            // Указываем, какой тип контента мы хотим получить
-            .accept(MediaType.APPLICATION_JSON)
-            // Выполняем запрос
-            .exchange()
-            // Проверяем полученный ответ
-            .expectStatus().isOk()
-            .expectBodyList(User.class)
-            .hasSize(4);
+                // Указываем метод запроса (GET) и адрес (*/users*)
+                .get()
+                .uri("/users")
+                // Указываем, какой тип контента мы хотим получить
+                .accept(MediaType.APPLICATION_JSON)
+                // Выполняем запрос
+                .exchange()
+                // Проверяем полученный ответ
+                .expectStatus()
+                .isOk()
+                .expectBodyList(User.class)
+                .hasSize(4);
     }
 
     @Test
@@ -42,39 +45,49 @@ public class AppTest {
         var existingUser = "a@b";
         var existingUserId = TestUtils.getUserId(existingUser, webTestClient);
         webTestClient
-            .get().uri("/users/{id}", existingUserId)
-            .accept(MediaType.APPLICATION_JSON)
-            .exchange()
-            .expectStatus().isOk()
-            .expectBody(User.class).value(user -> {
-                assertThat(user.getFirstName()).isEqualTo("John");
-                assertThat(user.getLastName()).isEqualTo("Smith");
-            });
+                .get()
+                .uri("/users/{id}", existingUserId)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(User.class)
+                .value(
+                        user -> {
+                            assertThat(user.getFirstName()).isEqualTo("John");
+                            assertThat(user.getLastName()).isEqualTo("Smith");
+                        });
     }
 
     @Test
     @Order(3)
     public void testUpdateUser() {
         var existingUser = "a@b";
-        var existingUserId = TestUtils.getUserId(existingUser,  webTestClient);
+        var existingUserId = TestUtils.getUserId(existingUser, webTestClient);
         User newUserData = new User("Test", "User", "test@test");
         webTestClient
-            .patch().uri("/users/{id}", existingUserId)
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON)
-            .body(Mono.just(newUserData), User.class)
-            .exchange()
-            .expectStatus().isOk();
+                .patch()
+                .uri("/users/{id}", existingUserId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(Mono.just(newUserData), User.class)
+                .exchange()
+                .expectStatus()
+                .isOk();
 
         webTestClient
-            .get().uri("/users/{id}", existingUserId)
-            .accept(MediaType.APPLICATION_JSON)
-            .exchange()
-            .expectStatus().isOk()
-            .expectBody(User.class).value(user -> {
-                assertThat(user.getFirstName()).isEqualTo("Test");
-                assertThat(user.getLastName()).isEqualTo("User");
-            });
+                .get()
+                .uri("/users/{id}", existingUserId)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(User.class)
+                .value(
+                        user -> {
+                            assertThat(user.getFirstName()).isEqualTo("Test");
+                            assertThat(user.getLastName()).isEqualTo("User");
+                        });
     }
 
     @Test
@@ -82,22 +95,27 @@ public class AppTest {
     public void testAddUser() {
         User newUserData = new User("New", "TestUser", "t@t");
         webTestClient
-            .post().uri("/users")
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON)
-            .body(Mono.just(newUserData), User.class)
-            .exchange()
-            .expectStatus().isOk();
+                .post()
+                .uri("/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(Mono.just(newUserData), User.class)
+                .exchange()
+                .expectStatus()
+                .isOk();
 
         webTestClient
-            .get().uri("/users")
-            .accept(MediaType.APPLICATION_JSON)
-            .exchange()
-            .expectStatus().isOk()
-            .expectBody(String.class)
-            .value(body -> {
-                assertThat(body).contains("TestUser", "New", "t@t");
-            });
+                .get()
+                .uri("/users")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(String.class)
+                .value(
+                        body -> {
+                            assertThat(body).contains("TestUser", "New", "t@t");
+                        });
     }
 
     @Test
@@ -106,19 +124,19 @@ public class AppTest {
         var existingUser = "c@d";
         var existingUserId = TestUtils.getUserId(existingUser, webTestClient);
 
-        webTestClient
-            .delete().uri("/users/{id}", existingUserId)
-            .exchange()
-            .expectStatus().isOk();
+        webTestClient.delete().uri("/users/{id}", existingUserId).exchange().expectStatus().isOk();
 
         webTestClient
-            .get().uri("/users")
-            .accept(MediaType.APPLICATION_JSON)
-            .exchange()
-            .expectStatus().isOk()
-            .expectBody(String.class)
-            .value(body -> {
-                assertThat(body).doesNotContain(existingUser);
-            });
+                .get()
+                .uri("/users")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(String.class)
+                .value(
+                        body -> {
+                            assertThat(body).doesNotContain(existingUser);
+                        });
     }
 }
