@@ -28,7 +28,7 @@ lint-fix:
 	./gradlew spotlessApply
 
 update-deps:
-	./gradlew refreshVersions
+	./gradlew versionCatalogUpdate
 	# ./gradlew dependencyUpdates -Drevision=release
 
 
