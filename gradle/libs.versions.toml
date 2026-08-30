@@ -8,7 +8,7 @@ spring-dependency-management = { id = "io.spring.dependency-management", version
 test-logger = { id = "com.adarshr.test-logger", version.ref = "test-logger-plugin" }
 
 [versions]
-spotless-plugin = "8.10.0"
+spotless-plugin = "8.10.1"
 lombok-plugin = "9.5.0"
 versions-plugin = "0.61.0"
 catalog-update-plugin = "1.1.1"
