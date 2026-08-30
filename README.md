@@ -11,14 +11,16 @@ This is a sample application built using Java Spring Boot and Flux. It demonstra
 
 1. Clone the repository.
 2. Build the project using the Makefile:
-  ```bash
-  make build
-  ```
+
+   ```bash
+   make build
+   ```
 
 3. Run the application:
-  ```bash
-  make run
-  ```
+
+   ```bash
+   make run
+   ```
 
 4. Access the application:
   Open your browser and navigate to `http://localhost:8080`.
