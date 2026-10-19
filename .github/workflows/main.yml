@@ -19,7 +19,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v6.0.0
         with:
-          java-version: '24'
+          java-version: '27'
           distribution: 'temurin'
 
       - name: Cache Gradle dependencies

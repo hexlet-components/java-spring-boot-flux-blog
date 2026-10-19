@@ -8,15 +8,17 @@ spring-dependency-management = { id = "io.spring.dependency-management", version
 test-logger = { id = "com.adarshr.test-logger", version.ref = "test-logger-plugin" }
 
 [versions]
-spotless-plugin = "8.10.1"
-lombok-plugin = "9.5.0"
-versions-plugin = "0.61.0"
+jacoco = "0.8.15"
+spotless-plugin = "8.10.4"
+lombok-plugin = "9.8.2"
+versions-plugin = "0.66.0"
 catalog-update-plugin = "1.1.1"
 spring-boot = "4.1.1"
 spring-dependency-management = "1.1.7"
 test-logger-plugin = "4.0.0"
 
 [libraries]
+jacocoAgent = { module = "org.jacoco:org.jacoco.agent", version.ref = "jacoco" }
 # Spring Boot: версии управляет io.spring.dependency-management
 springBootStarterWebflux = { module = "org.springframework.boot:spring-boot-starter-webflux" }
 springBootStarterDataR2dbc = { module = "org.springframework.boot:spring-boot-starter-data-r2dbc" }

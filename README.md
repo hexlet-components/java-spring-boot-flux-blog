@@ -4,7 +4,7 @@ This is a sample application built using Java Spring Boot and Flux. It demonstra
 
 ## Prerequisites
 
-- Java 24 or higher
+- Java 27 or higher
 - Gradle 8.4 or higher
 
 ## Getting Started
